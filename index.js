@@ -31,10 +31,15 @@ exports.getActiveWindow = function(callback,repeats,interval){
   //Run shell script
   const ls  = spawn(config.bin,parameters);
   ls.stdout.setEncoding('utf8');
+  let cachedStr = '';
 
   //Obtain successful response from script
   ls.stdout.on('data', function(stdout){
-    callback(reponseTreatment(stdout.toString()));
+    const str = stdout.toString();
+    if (str !== cachedStr) {
+      cachedStr = str;
+      callback(reponseTreatment(stdout.toString()));
+    }
   });
 
   //Obtain error response from script
